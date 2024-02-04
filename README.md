@@ -266,9 +266,11 @@ Due to the time constraint, optimization of the server is not fully achieved. Th
 These are possible techniques to optimize the server:
 
 -  Run MLFlow server with more workers and distrubuted in multiple container instances. Manage the MLFlow server with Kubernetes. Attaching Load Balancer to distribute the requests to multiple MLFlow server instances.
--  Use FastAPI with more workers and distrubuted in multiple container instances. Manage the FastAPI server with Kubernetes. Attaching Load Balancer to distribute the requests to multiple FastAPI server instances.
+However, in present, we don't have to worry about managing the MLFlow server because there are data platform providers out there that provide "Managed MLFlow" services, Databricks is one of them.
 
-Using Kubernetes, we can scale the server up and down based on the load. We can also use Kubernetes to manage the server and monitor the server's health.
+-  Use FastAPI with more workers and distrubuted in multiple container instances. Manage the FastAPI server with Kubernetes. Attaching Load Balancer to distribute the requests to multiple FastAPI server instances. Also, we can take less care of the server by using container management solutions, such as AWS Fargate, Google Cloud Run, or Azure Container Instances. These solutions will let us easily deploy and manage the server without worrying about the infrastructure.
+
+- We can also use native serverless solutions provided by cloud providers, such as AWS Lambda, Google Cloud Functions, or Azure Functions. We can deploy server with cost optimization and auto-scaling. One concern is that, the serverless solutions may not be suitable for long-running tasks, such as the inference of the model.
 
 *Note that* by initializing the server with more workers and distrubuted in multiple container instances, pricing and cost of running the server will be higher. We have to consider the trade-off between the cost and the performance. One way to optimize the cost is to set up scaling rules to scale the server up and down based on the numbers of load.
 
