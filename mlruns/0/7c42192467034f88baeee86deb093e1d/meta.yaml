@@ -1,0 +1,16 @@
+artifact_uri: mlflow-artifacts:/0/7c42192467034f88baeee86deb093e1d/artifacts
+deleted_time: 1707070577111
+end_time: 1707067565438
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: deleted
+run_id: 7c42192467034f88baeee86deb093e1d
+run_name: fun-rat-12
+run_uuid: 7c42192467034f88baeee86deb093e1d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1707067562606
+status: 3
+tags: []
+user_id: kuangsmacbook

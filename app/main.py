@@ -32,6 +32,7 @@ app = FastAPI()
 @app.on_event("startup")
 async def startup_db():
     await init_db()
+    
 
 # Use CORS
 app.add_middleware(

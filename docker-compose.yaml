@@ -1,37 +1,69 @@
-version: '3.12'
+version: '3.8'
 
 services:
-  # FastAPI ML Inference Server
+# FastAPI service for ML Inference
   fastapi-ml-inference:
-    image: recommend_restaurant:latest 
+    build:
+      context: .
+      dockerfile: Dockerfile.fastapi
     ports:
       - "8000:8000"
+    networks:
+      - mlflow_network
     environment:
-      - MLFLOW_URI=runs:/20667a37d29345be907ccc4007dd9978/recommend  # Change on your ML model path here
-      - DATABASE_URL=postgresql://kuanggy:712211@localhost:5432/restaurant_recommmendation
-      - MLFLOW_ARTIFACT_PATH=file:///Users/kuangsmacbook/Desktop/Works/LINEMAN MLE/attachment/mlruns/
+      - MLFLOW_ARTIFACT_PATH=runs:/787d3b50d21a40c890b45befcb1fc1bb/recommend # We can actually use mlflow path that run remotely. Ex: Databricks
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/restaurant_reccomendation
+      - MLFLOW_URI=http://mlflow:4545 # We can actually use mlflow server that run remotely. Ex: Databricks
+      - ENV=dev # if this is set as dev, it will load model from local path, otherwise, you should provide the remote MLFLOW_URI and MLFLOW_ARTIFACT_PATH
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      mlflow:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://mlflow:4545"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
-  # PostgreSQL Database Server
+  # PostgreSQL database server | We can actually use postgres that run remotely. Ex: AWS RDS | If use remote one, we can comment this out!
   postgres:
     image: postgres:latest
     environment:
-      - POSTGRES_DB=restaurant_recommmendation
-      - POSTGRES_USER=kuanggy
-      - POSTGRES_PASSWORD=712211
-    ports:
-      - "5432:5432"
-
-  # MLflow Server
-  mlflow:
-    image: mlflow/mlflow:latest
-    ports:
-      - "5000:5000"
-    environment:
-      - BACKEND_STORE_URI=postgresql://ml_app_user:ml_app_password@postgres:5432/ml_app_db
-      - ARTIFACT_STORE_URI=/mlflow/artifacts
+      POSTGRES_DB: restaurant_reccomendation
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
-      - ./mlflow:/mlflow
-    depends_on:
-      - postgres
+      - ./mockup_data/restaurant.parquet:/docker-entrypoint-initdb.d/restaurant.parquet
+      - ./mockup_data/user.parquet:/docker-entrypoint-initdb.d/user.parquet
+    networks:
+      - mlflow_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "restaurant_reccomendation", "-U", "postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  # MLflow server | We can actually use mlflow server that run remotely. Ex: Databricks | If use remote one, we can comment this out!
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow
+    ports:
+      - "4545:4545"
+    networks:
+      - mlflow_network
+    environment:
+      - BACKEND_STORE_URI=file:///Users/kuangsmacbook/Desktop/Works/LINEMANMLE/attachment/server/mlruns # Replace with your model repository path. You can use, for example, s3://my-bucket/mlruns.
+      - MLFLOW_SERVER_WORKERS=4
+    volumes:
+      - /Users/kuangsmacbook/Desktop/Works/LINEMANMLE/attachment/server/mlruns:/Users/kuangsmacbook/Desktop/Works/LINEMANMLE/attachment/server/mlruns
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4545"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+networks:
+  mlflow_network:
+    driver: bridge
