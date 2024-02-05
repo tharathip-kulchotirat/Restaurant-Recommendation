@@ -1,13 +1,16 @@
 import pandas as pd
 import numpy as np
 from locust import HttpUser, task, between
+from pathlib import Path
+
+request_file = Path(__file__).parent / "request.parquet"
 
 class RecommendationUser(HttpUser):
     wait_time = between(1, 2)  # Time between requests in seconds
     
     def load_request_params(self):
         # Load parameters from request.parquet file
-        df = pd.read_parquet("perf_test/request.parquet")
+        df = pd.read_parquet(request_file)
         return df.to_dict(orient="records")
 
     @task

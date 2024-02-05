@@ -108,9 +108,9 @@ pip install 'mlflow[extras]'
 ```
 
 #### 5. Now, run the MLFlow server with UI (if you have remote MLFlow server, you can skip this step)
-> We use MLFlow to serve the model. `-w 4` is the number of workers.
+> We use MLFlow to serve the model. `-w 8` is the number of workers.
 ```bash
-mlflow ui --backend-store-uri file://<path-to-mlflow-artifact> -w 4
+mlflow ui --backend-store-uri file://<path-to-mlflow-artifact> -w 8
 ```
 Now, the MLFlow server is running at `http://127.0.0.1:5000`. It looks like this:
 
@@ -217,7 +217,7 @@ The server must be able to serve 30 requests per second of the given request par
 **Approach**: <br/>
 To achieve the objective, my design of the server is to use FastAPI as the REST server framework, use Postgres as the database, and use MLFlow to serve the model.
 - Set up and allow Postgres Database Query requests to be asynchronous.
-- Use MLFlow to serve the model with the REST API with 4 workers.
+- Use MLFlow to serve the model with the REST API with 8 workers.
 - Use FastAPI to serve the REST API with 4 workers.
 - Use numpy and pythonic style coding to optimize the recommendation algorithm.
 
@@ -226,9 +226,9 @@ To achieve the objective, my design of the server is to use FastAPI as the REST 
 **Result**: <br/>
 The server is somewhat able to serve 30 requests per second of the given request parameters with the 90th percentile of response time within 100 milliseconds. However, the 90th percentile in some request parameters is higher than 100 milliseconds. These are the conclusion of the load test:
 
-| Number of users concurrency | Spawn rate (users/second) | Run time (s) | Total Numbers of Requests | Mean of 90%ile Response Time (ms) | # of Req that 90%ile Response Time < 100ms | % Ratio of Req that 90%ile Response Time < 100ms Per Total |
+| Number of users concurrency | Spawn rate (users/second) | Run time (s) | Total Numbers of Requests | Average 90%ile Response Time (ms) | # of Req that 90%ile Response Time < 100ms | % Ratio of Req that 90%ile Response Time < 100ms Per Total |
 | --- | --- | --- | --- | --- | --- | --- |
-| 30 | 30 | 15 | 172 | 231.75 | 73 | 42.44% |
+| 30 | 30 | 30 | 796 | 97.41 | 638 | 80.15% |
 
 <br/>
 
@@ -256,7 +256,7 @@ The most time-consuming step is `Get Recommendations` which uses 46.98% of total
 
 For, interactive report and statistics, you can download the files below: <br/>
 Download the report [here](./resources/load_test_report.html). <br/>
-Download the statistics [here](./resources/load_test_stats.csv).
+Download the statistics [here](./resources/load_test_stats.xlsx).
 
 ## Discussion
 
