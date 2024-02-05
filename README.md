@@ -249,7 +249,7 @@ After using asynchronous request to Postgres, it helps to reduce the time of `Ge
 The most time-consuming step is `Get Recommendations` which uses 46.98% of total time. This step is the inference of model. This is the step that we can optimize further.
 
 
-*Plot of the 90th percentile of response time*:
+*Plot of the 50th and 95th percentile of response time*:
 <br/>
 
 ![90th percentile of response time](./resources/locus_plot.png)
