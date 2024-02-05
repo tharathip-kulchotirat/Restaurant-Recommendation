@@ -97,17 +97,17 @@ conda create -n <env-name> python=3.11.5
 conda activate <env-name>
 ```
 
-#### 4. Prepare you Postgres database
+#### 3. Prepare you Postgres database
 - Create a new database
 - Create a new user with password
 - Grant all privileges to the user on the database
 
-#### 5. Install MLFlow
+#### 4. Install MLFlow
 ```bash
 pip install 'mlflow[extras]'
 ```
 
-#### 6. Now, run the MLFlow server with UI (if you have remote MLFlow server, you can skip this step)
+#### 5. Now, run the MLFlow server with UI (if you have remote MLFlow server, you can skip this step)
 > We use MLFlow to serve the model. `-w 4` is the number of workers.
 ```bash
 mlflow ui --backend-store-uri file://<path-to-mlflow-artifact> -w 4
@@ -116,12 +116,12 @@ Now, the MLFlow server is running at `http://127.0.0.1:5000`. It looks like this
 
 ![MLFlow UI](./resources/mlflow_ui2.png)
 
-#### 7. Install the dependencies
+#### 6. Install the dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-#### 8. Before running the server, we need to register the model to MLFlow registry (if you have remote MLFlow server, you can skip this step, just use the *model URI and run ID*)
+#### 7. Before running the server, we need to register the model to MLFlow registry (if you have remote MLFlow server, you can skip this step, just use the *model URI and run ID*)
 ```bash
 python ml_model/register_model.py
 ```
@@ -129,7 +129,7 @@ This script will register the model to MLFlow registry and return the run ID. Yo
 
 ![MLFlow UI](./resources/mlflow_ui.png)
 
-#### 9. Load mock-up data to the database (if you have remote database, you can skip this step)
+#### 8. Load mock-up data to the database (if you have remote database, you can skip this step)
 For folder `mockup_data`, you have to copy `user.parquet` and `restaurant.parquet` into the folder. The script will copy data to the database.
 ```bash
 # for user features
@@ -139,7 +139,7 @@ python parq_to_postgres.py user.parquet --host <host> --port <port> --user <user
 python parq_to_postgres.py restaurant.parquet --host <host> --port <port> --user <user> --dbname <database_name> --table restaurants
 ```
 
-#### 10. Set the environment variables
+#### 9. Set the environment variables
 ```bash
 #.env
 DATABASE_URL=postgresql+asyncpg://<username>:<password>@<host>:<port>/<database>
@@ -148,12 +148,12 @@ MLFLOW_ARTIFACT_PATH=runs://<run_id>/recommend
 ENV=dev # or prod
 ```
 
-#### 11. Run the server
+#### 10. Run the server
 ```bash
 uvicorn app.main:app --workers 4
 ```
 
-#### 12. Now, the server is running at `http://127.0.0.1:8000`. You can use the REST APIs as described above.
+#### 11. Now, the server is running at `http://127.0.0.1:8000`. You can use the REST APIs as described above.
 > Health check is also available at `http://127.0.0.1:8000/healthcheck`.
 
 ## Running the server using Docker
