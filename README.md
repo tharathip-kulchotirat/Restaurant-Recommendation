@@ -122,6 +122,7 @@ pip install -r requirements.txt
 ```
 
 #### 7. Before running the server, we need to register the model to MLFlow registry (if you have remote MLFlow server, you can skip this step, just use the *model URI and run ID*)
+*Before running this script, you will need to place `model.pkl` to the same directory as the script.*
 ```bash
 python ml_model/register_model.py
 ```
