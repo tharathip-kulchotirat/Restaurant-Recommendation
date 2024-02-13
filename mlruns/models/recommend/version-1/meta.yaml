@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1707845703440
+current_stage: None
+description: ''
+last_updated_timestamp: 1707845703440
+name: recommend
+run_id: 81c84381b089412886f982d558a4231a
+run_link: ''
+source: mlflow-artifacts:/0/81c84381b089412886f982d558a4231a/artifacts/recommend
+status: READY
+status_message: null
+storage_location: mlflow-artifacts:/0/81c84381b089412886f982d558a4231a/artifacts/recommend
+user_id: null
+version: 1
